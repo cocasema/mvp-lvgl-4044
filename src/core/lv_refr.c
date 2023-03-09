@@ -7,6 +7,7 @@
  *      INCLUDES
  *********************/
 #include <stddef.h>
+#include <stdio.h>
 #include "lv_refr.h"
 #include "lv_disp.h"
 #include "../hal/lv_hal_tick.h"
@@ -623,6 +624,7 @@ static void refr_area_part(lv_draw_ctx_t * draw_ctx)
     if((draw_buf->buf1 && !draw_buf->buf2) ||
        (draw_buf->buf1 && draw_buf->buf2 && full_sized)) {
         while(draw_buf->flushing) {
+            printf("%u: while(draw_buf->flushing)\n", __LINE__);
             if(disp_refr->driver->wait_cb) disp_refr->driver->wait_cb(disp_refr->driver);
         }
 
@@ -1170,6 +1172,7 @@ static void draw_buf_rotate(lv_area_t * area, lv_color_t * color_p)
             call_flush_cb(drv, area, rot_buf == NULL ? color_p : rot_buf);
             /*FIXME: Rotation forces legacy behavior where rendering and flushing are done serially*/
             while(draw_buf->flushing) {
+                printf("%u: while(draw_buf->flushing)\n", __LINE__);
                 if(drv->wait_cb) drv->wait_cb(drv);
             }
             color_p += area_w * height;
@@ -1262,4 +1265,3 @@ static void mem_monitor_init(mem_monitor_t * _mem_monitor)
     _mem_monitor->mem_label = NULL;
 }
 #endif
-
